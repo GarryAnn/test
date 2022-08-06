@@ -286,7 +286,7 @@ public class LoginController {
     // 打开注册界面
     @RequestMapping("/registerView")
     public String toRegister(){
-        return "register";//   页面名称
+        return "register123";//   页面名称
     }
 
     // 注册
