@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.RolePowerMapper"><!--命名空间属性（必须写）-->
+    <!--查询角色-->
+    <select id="findRole" resultType="com.bean.Tblrole">
+        select * from tblrole
+    </select>
+
+    <!--查询权限-->
+    <select id="findPower" resultType="com.bean.Tblpower">
+        select * from tblpower
+    </select>
+
+    <!--根据角色ID查该角色拥有的所有权限-->
+    <select id="findRoleAllPower" resultType="com.bean.Tblrole">
+        select * from tblrolepower rp
+        INNER join tblpower p on rp.powerId = p.powerId
+        INNER join tblrole r on rp.roleId = r.roleId
+        where r.roleId = #{roleId}
+    </select>
+
+    <!--添加权限-->
+    <insert id="addPower">
+        insert into tblrolepower (roleId, powerId) VALUES (#{roleId}, #{powerId})
+    </insert>
+
+    <!--删除权限-->
+    <delete id="delPower">
+        DELETE from tblrolepower WHERE roleId = #{roleId}
+    </delete>
+
+    <!--查父权限下还有没有子权限-->
+    <select id="childPowerList" resultType="com.bean.Tblpower">
+        select * from tblpower where parentId = #{parentId}
+    </select>
+
+    <!--判断该角色是否有该权限-->
+    <select id="findRolePower" resultType="com.bean.Tblrolepower">
+        select * from tblrolepower where roleId = #{roleId} and powerId = #{powerId}
+    </select>
+
+
+
+    <!--角色管理：查-->
+    <select id="findAllRole" resultType="com.bean.Tblrole">
+        select * from tblrole where 1=1
+        <if test="roleName != null and roleName != ''">
+            and roleName like concat('%',#{roleName},'%')
+        </if>
+    </select>
+    <!--角色数量-->
+    <select id="roleCount" resultType="int">
+        select count(*) as count from tblrole
+    </select>
+
+    <!--判断角色名是否已存在-->
+    <select id="checkRoleName" resultType="com.bean.Tblrole">
+        select * from tblrole where roleName = #{roleName}
+    </select>
+
+    <!--角色管理：添加-->
+    <insert id="addRole">
+        insert into tblrole (roleName, roleDescribe) VALUES (#{roleName}, #{roleDescribe})
+    </insert>
+
+    <!--角色管理：删-->
+    <delete id="delRole">
+        DELETE FROM tblrole where roleId = #{roleId}
+    </delete>
+    <!--检测该角色是否已被使用-->
+    <select id="checkRole" resultType="com.bean.Tblrole">
+        select * from tblrole r inner join tbluser u on r.roleId = u.roleId where u.roleId = #{roleId}
+    </select>
+
+    <!--角色管理：修改-->
+    <update id="updRole">
+        UPDATE tblrole set RoleDescribe = #{RoleDescribe} where roleId = #{roleId}
+    </update>
+
+</mapper>

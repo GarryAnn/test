@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.UserMapper"><!--命名空间属性（必须写）-->
+    <!--登录-->
+    <select id="login" resultType="com.bean.Tbluser">
+        select * from tbluser WHERE acc = #{acc} and pwd = #{pwd}
+    </select>
+
+    <!--注册 / 新增角色-->
+    <insert id="register">
+        insert into tbluser(acc,pwd,userName,sex,age,url) values (#{acc},#{pwd},#{userName},#{sex},#{age},#{url})
+    </insert>
+    <!--【新框架】新增角色-->
+    <insert id="confirmAddUser">
+        insert into tbluser(acc,pwd,userName,sex,age,address) values (#{acc},'123',#{userName},#{sex},#{age},#{address})
+    </insert>
+
+    <!--检测帐号是否已存在-->
+    <select id="checkAcc" resultType="com.bean.Tbluser">
+        select * from tbluser WHERE acc = #{acc}
+    </select>
+
+    <!--用户列表-->
+    <select id="findUser" resultType="com.bean.Tbluser">
+        select * from tbluser where 1=1
+        <if test="acc != null and acc != ''">
+            and acc like concat ('%',#{acc},'%')
+        </if>
+        <if test="userName != null and userName != ''">
+            and userName like concat('%',#{userName},'%')
+        </if>
+    </select>
+
+    <!--用户列表总条数-->
+    <select id="userCount" resultType="int">
+        select count(*) as count from tbluser
+    </select>
+
+    <!--删除用户-->
+    <delete id="delUser">
+        DELETE FROM tbluser where id = #{id}
+    </delete>
+
+    <!--修改用户-->
+    <update id="updUser">
+        UPDATE tbluser set pwd = #{pwd}, userName = #{userName}, sex = #{sex}, age = #{age}, address = #{address} where id = #{id}
+    </update>
+
+</mapper>
